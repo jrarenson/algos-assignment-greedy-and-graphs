@@ -1,7 +1,7 @@
 /**
  * Public Transit
- * Author: Your Name and Carolyn Yao
- * Does this compile? Y/N
+ * Author: Jonathan Arenson and Carolyn Yao
+ * Does this compile? Y
  */
 
 /**
@@ -34,8 +34,39 @@ public class FastestRoutePublicTransit {
   ) {
     // Your code along with comments here. Feel free to borrow code from any
     // of the existing method. You can also make new helper methods.
-    return 0;
-  }
+	  int totalVertices = lengths[0].length;
+        
+	    int[] trainTimes = new int[totalVertices];
+	    Boolean[] processed = new Boolean[totalVertices];
+
+	    for (int edgeV = 0; edgeV < totalVertices; edgeV++) {
+	      trainTimes[edgeV] = Integer.MAX_VALUE;
+	      processed[edgeV] = false;
+	    }
+
+	    for (int counter = 0; counter < totalVertices-1 ; counter++) { //finds shortest path
+	      int edgeU = findNextToProcess(trainTimes, processed);
+	      processed[edgeU] = true;
+ 
+	      //GeeksforGeeks
+	      //changes wait time for all vertices
+	      for (int edgeV = 0; edgeV < totalVertices; edgeV++) {
+	        int waitTime = 0;
+	        if(freq[edgeU][edgeV] > 0){
+	          if(trainTimes[edgeU] <= first[edgeU][edgeV]){
+	            waitTime = first[edgeU][edgeV] - trainTimes[edgeU];
+	          }else if((trainTimes[edgeU] - first[edgeU][edgeV]) % freq[edgeU][edgeV] != 0){
+	            waitTime = freq[edgeU][edgeV] - (trainTimes[edgeU] - first[edgeU][edgeV]) % freq[edgeU][edgeV];
+	          }
+	        }
+
+	        if (!processed[edgeV] && lengths[edgeU][edgeV]!=0) {
+	          trainTimes[edgeV] = trainTimes[edgeU] + waitTime + lengths[edgeU][edgeV];
+	        }
+	      }
+	    }
+	    return trainTimes[T];
+	  }
 
   /**
    * Finds the vertex with the minimum time from the source that has not been
@@ -125,5 +156,6 @@ public class FastestRoutePublicTransit {
     t.shortestTime(lengthTimeGraph, 0);
 
     // You can create a test case for your implemented method for extra credit below
+    //extra credit 
   }
 }
